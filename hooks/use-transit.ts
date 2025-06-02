@@ -1,79 +1,66 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
-import { sampleBusStops, sampleSubwayStations } from "@/data/sample-data"
+import { useEffect } from "react"
+import type { BusStop, SubwayStation } from "@/types/transit"
+import { useLocation } from "./use-location"
+import { useSearch } from "./use-search"
+import { useSelection } from "./use-selection"
+import { useTab } from "./use-tab"
+import { useDetail } from "./use-detail"
+import { useMobile } from "./use-mobile"
 
 export function useTransit() {
-  const [activeTab, setActiveTab] = useState<TransitTab>("bus")
-  const [location, setLocation] = useState<LocationInfo>({
-    latitude: 37.4979,
-    longitude: 127.0276,
-    address: "서울특별시 강남구 역삼동 123-45",
-  })
-  const [busStops, setBusStops] = useState<BusStop[]>([])
-  const [subwayStations, setSubwayStations] = useState<SubwayStation[]>([])
-  const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null)
-  const [selectedSubwayStation, setSelectedSubwayStation] = useState<SubwayStation | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [showDetail, setShowDetail] = useState(false)
+  const { location, updateLocation } = useLocation()
+  const { loading, busStops, subwayStations, searchNearbyStops, clearResults } = useSearch()
+  const {
+    selectedBusStop,
+    selectedSubwayStation,
+    selectBusStop,
+    selectSubwayStation,
+    clearSelection,
+    autoSelectFirst,
+  } = useSelection()
+  const { activeTab, switchTab } = useTab()
+  const { showDetail, showDetailView, hideDetailView } = useDetail()
+  const isMobile = useMobile()
 
-  const searchNearbyStops = () => {
-    setLoading(true)
+  // 탭 변경 시 선택 초기화 및 자동 선택
+  useEffect(() => {
+    clearSelection()
+    autoSelectFirst(activeTab, busStops, subwayStations, isMobile)
+  }, [activeTab, busStops, subwayStations, isMobile, clearSelection, autoSelectFirst])
 
-    // 실제 API 호출 대신 샘플 데이터 사용
-    setTimeout(() => {
-      setBusStops(sampleBusStops)
-      setSubwayStations(sampleSubwayStations)
-      setLoading(false)
-
-      // 첫 번째 항목을 기본 선택 (데스크톱에서만)
-      if (window.innerWidth >= 768) {
-        if (activeTab === "bus" && sampleBusStops.length > 0) {
-          setSelectedBusStop(sampleBusStops[0])
-        } else if (activeTab === "subway" && sampleSubwayStations.length > 0) {
-          setSelectedSubwayStation(sampleSubwayStations[0])
-        }
-      }
-    }, 1000)
+  // 검색 후 자동 선택
+  const handleSearch = async () => {
+    await searchNearbyStops()
   }
 
+  // 정류장/역 선택 처리
   const handleStopSelect = (stop: BusStop | SubwayStation) => {
     if (activeTab === "bus") {
-      setSelectedBusStop(stop as BusStop)
-      setSelectedSubwayStation(null)
+      selectBusStop(stop as BusStop)
     } else {
-      setSelectedSubwayStation(stop as SubwayStation)
-      setSelectedBusStop(null)
+      selectSubwayStation(stop as SubwayStation)
     }
 
     // 모바일에서는 상세 화면으로 전환
-    if (window.innerWidth < 768) {
-      setShowDetail(true)
+    if (isMobile) {
+      showDetailView()
     }
   }
 
-  const handleBackToList = () => {
-    setShowDetail(false)
-  }
-
-  useEffect(() => {
-    if (activeTab === "bus") {
-      setSelectedSubwayStation(null)
-      if (busStops.length > 0 && window.innerWidth >= 768) {
-        setSelectedBusStop(busStops[0])
-      }
-    } else {
-      setSelectedBusStop(null)
-      if (subwayStations.length > 0 && window.innerWidth >= 768) {
-        setSelectedSubwayStation(subwayStations[0])
-      }
+  // 탭 변경 처리
+  const handleTabChange = (tab: "bus" | "subway") => {
+    switchTab(tab)
+    // 모바일에서 상세 화면이 열려있다면 닫기
+    if (isMobile && showDetail) {
+      hideDetailView()
     }
-  }, [activeTab, busStops, subwayStations])
+  }
 
   return {
+    // 상태
     activeTab,
-    setActiveTab,
     location,
     busStops,
     subwayStations,
@@ -81,8 +68,15 @@ export function useTransit() {
     selectedSubwayStation,
     loading,
     showDetail,
-    searchNearbyStops,
+    isMobile,
+
+    // 액션
+    setActiveTab: handleTabChange,
+    searchNearbyStops: handleSearch,
     handleStopSelect,
-    handleBackToList,
+    handleBackToList: hideDetailView,
+    updateLocation,
+    clearResults,
+    clearSelection,
   }
 }
