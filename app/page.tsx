@@ -1,7 +1,7 @@
 "use client"
 
-import { MobileLayout } from "@/components/mobile-layout"
-import { DesktopLayout } from "@/components/desktop-layout"
+import { MobileLayout } from "@/components/layout/mobile-layout"
+import { DesktopLayout } from "@/components/layout/desktop-layout"
 import { useTransit } from "@/hooks/use-transit"
 
 export default function TransitApp() {

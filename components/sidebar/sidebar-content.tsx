@@ -2,9 +2,9 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Bus, Train } from "lucide-react"
-import { LocationInfoCard } from "@/components/location-info"
-import { BusStopList } from "@/components/bus-stop-list"
-import { SubwayStationList } from "@/components/subway-station-list"
+import { LocationInfoCard } from "@/components/sidebar/location-info"
+import { BusStopList } from "@/components/sidebar/bus-stop-list"
+import { SubwayStationList } from "@/components/sidebar/subway-station-list"
 import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 interface SidebarContentProps {

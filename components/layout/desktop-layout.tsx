@@ -1,5 +1,5 @@
-import { SidebarContent } from "@/components/sidebar-content"
-import { DetailContent } from "@/components/detail-content"
+import { SidebarContent } from "@/components/sidebar/sidebar-content"
+import { DetailContent } from "@/components/detail/detail-content"
 import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 interface DesktopLayoutProps {

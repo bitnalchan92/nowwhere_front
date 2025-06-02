@@ -1,7 +1,7 @@
 import type { BusStop, SubwayStation, TransitTab } from "@/types/transit"
-import { BusStopDetail } from "@/components/bus-stop-detail"
-import { SubwayStationDetail } from "@/components/subway-station-detail"
-import { EmptyDetail } from "@/components/empty-detail"
+import { BusStopDetail } from "@/components/detail/bus-stop-detail"
+import { SubwayStationDetail } from "@/components/detail/subway-station-detail"
+import { EmptyDetail } from "@/components/detail/empty-detail"
 
 interface DetailContentProps {
   activeTab: TransitTab
