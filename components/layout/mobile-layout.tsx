@@ -10,6 +10,7 @@ import { SubwayStationList } from "@/components/sidebar/subway-station-list"
 import { DetailContent } from "@/components/detail/detail-content"
 import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
+// 모바일 레이아웃 컴포넌트의 props 타입 정의
 interface MobileLayoutProps {
   showDetail: boolean
   activeTab: TransitTab
@@ -26,6 +27,12 @@ interface MobileLayoutProps {
   onBackToList: () => void
 }
 
+/**
+ * 모바일 전용 레이아웃 컴포넌트
+ * - 세로 방향 레이아웃 (전체 화면 사용)
+ * - 리스트 화면과 상세 화면을 전환하는 방식
+ * - 네이티브 앱과 유사한 UX 제공
+ */
 export function MobileLayout({
   showDetail,
   activeTab,
@@ -41,10 +48,11 @@ export function MobileLayout({
   onSelectSubwayStation,
   onBackToList,
 }: MobileLayoutProps) {
+  // 상세 화면이 활성화된 경우의 렌더링
   if (showDetail) {
     return (
       <div className="flex flex-col h-screen bg-white">
-        {/* 모바일 상세 헤더 */}
+        {/* 상세 화면 헤더 (뒤로가기 버튼 포함) */}
         <div className="flex items-center gap-3 p-4 border-b border-gray-200">
           <Button variant="ghost" size="sm" onClick={onBackToList}>
             <ArrowLeft className="h-4 w-4" />
@@ -52,7 +60,7 @@ export function MobileLayout({
           <h1 className="text-lg font-semibold">상세 정보</h1>
         </div>
 
-        {/* 모바일 상세 내용 */}
+        {/* 상세 정보 내용 (스크롤 가능) */}
         <div className="flex-1 overflow-y-auto p-4">
           <DetailContent
             activeTab={activeTab}
@@ -64,13 +72,14 @@ export function MobileLayout({
     )
   }
 
+  // 리스트 화면 렌더링 (기본 화면)
   return (
     <div className="flex flex-col h-screen">
-      {/* 모바일 헤더 */}
+      {/* 모바일 헤더 (제목과 탭) */}
       <div className="bg-white border-b border-gray-200 p-4">
         <h1 className="text-xl font-bold text-gray-900 mb-4">실시간 교통정보</h1>
 
-        {/* 탭 */}
+        {/* 버스/지하철 탭 전환 */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TransitTab)}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="bus" className="flex items-center gap-2">
@@ -85,10 +94,10 @@ export function MobileLayout({
         </Tabs>
       </div>
 
-      {/* 현재 위치 */}
+      {/* 현재 위치 정보와 검색 버튼 */}
       <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
 
-      {/* 정류장/역 리스트 */}
+      {/* 정류장/역 리스트 (스크롤 가능) */}
       <div className="flex-1 overflow-y-auto bg-white">
         <Tabs value={activeTab}>
           <TabsContent value="bus" className="mt-0">
@@ -96,7 +105,7 @@ export function MobileLayout({
               busStops={busStops}
               selectedBusStop={selectedBusStop}
               onSelect={onSelectBusStop}
-              isMobile={true}
+              isMobile={true} // 모바일 스타일 적용
             />
           </TabsContent>
 
@@ -105,7 +114,7 @@ export function MobileLayout({
               stations={subwayStations}
               selectedStation={selectedSubwayStation}
               onSelect={onSelectSubwayStation}
-              isMobile={true}
+              isMobile={true} // 모바일 스타일 적용
             />
           </TabsContent>
         </Tabs>
