@@ -1,4 +1,4 @@
-# Simple bus app
+# NowWhere
 
 *Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
@@ -7,24 +7,4 @@
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
-
-## Deployment
-
-Your project is live at:
-
-**[https://vercel.com/bitnalchan92s-projects/v0-simple-bus-app](https://vercel.com/bitnalchan92s-projects/v0-simple-bus-app)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.dev/chat/projects/O5ABJxpxsgL](https://v0.dev/chat/projects/O5ABJxpxsgL)**
-
-## How It Works
-
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+간단한 교통정보를 제공하는 사이드 프로젝트입니다. [🚀](https://v0-simple-bus-app.vercel.app/)
