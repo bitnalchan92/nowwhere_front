@@ -1,7 +1,34 @@
 "use client"
 
+import axios from 'axios';
 import {useEffect, useState} from "react"
 import type {LocationInfo} from "@/types/transit"
+
+type KakaoAddressInfo = {
+  addressName: string;
+  roadAddressName: string;
+  zoneNo: string;
+}
+const fetchAddress = async (latitude: number, longitude: number): Promise<KakaoAddressInfo | null> => {
+  try {
+    const response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_SERVER_HOST}/api/kakao/addressInfo`,
+      {
+        params: {longitude, latitude},
+      }
+    )
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+const axiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_SERVER_HOST,
+});
+
 
 export function useLocation() {
   const [location, setLocation] = useState<LocationInfo>({
@@ -9,7 +36,6 @@ export function useLocation() {
     longitude: 0,
     address: "",
   })
-
   useEffect(() => {
     if (!navigator.geolocation) {
       return;
@@ -19,29 +45,21 @@ export function useLocation() {
       (position) => {
         const {latitude, longitude} = position.coords;
 
-        const fetchAddress = async () => {
-          const res = await fetch(
-            `https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${longitude}&y=${latitude}`,
-            {
-              headers: {
-                Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}`
-              }
-            }
-          );
-
-          const data = await res.json();
-          const region = data.documents?.[0];
-          if (region) {
-            return `${region.region_1depth_name} ${region.region_2depth_name} ${region.region_3depth_name}`;
-          }
-        };
-
-        fetchAddress().then((res) => {
-          updateLocation({
+        fetchAddress(latitude, longitude).then((res) => {
+          const result = {
             latitude,
             longitude,
-            address: res || "",
-          })
+            address: "주소 정보를 불러오지 못했습니다."
+          }
+          if (res) {
+            result.address =
+              res.roadAddressName != "" && res.zoneNo != "" ?
+                res.roadAddressName + "(" + res.zoneNo + ")"
+                :
+                res.addressName;
+          }
+
+          updateLocation(result);
         });
 
       },
