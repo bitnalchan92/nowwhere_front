@@ -1,9 +1,7 @@
 "use client"
 
 import type { NearBusStop } from "@/types/transit"
-import { getListItemClass, getTextSizeClass } from "@/utils/list-styles"
 import { ListItemHeader } from "@/components/common/list-item-header"
-import { RouteBadges } from "@/components/common/route-badges"
 
 interface BusStopItemProps {
   nearBusStop: NearBusStop
@@ -13,13 +11,30 @@ interface BusStopItemProps {
 }
 
 export function BusStopItem({ nearBusStop, isSelected, isMobile, onSelect }: BusStopItemProps) {
+  const baseClasses = "cursor-pointer transition-all duration-200 ease-in-out"
+
+  const mobileClasses = isMobile ? "p-4 border-b border-gray-100 hover:bg-blue-50 active:bg-blue-100" : ""
+
+  const desktopClasses = !isMobile
+    ? `p-3 rounded-lg border-l-4 hover:bg-gray-50 hover:shadow-sm ${
+      isSelected ? "border-blue-500 bg-blue-50 shadow-sm" : "border-transparent hover:border-blue-200"
+    }`
+    : ""
+
+  const selectedMobileClasses = isMobile && isSelected ? "bg-blue-50 border-blue-500" : ""
+
   return (
-    <div className={getListItemClass(isMobile, isSelected, "blue")} onClick={() => onSelect(nearBusStop)}>
+    <div
+      className={`${baseClasses} ${mobileClasses} ${desktopClasses} ${selectedMobileClasses}`}
+      onClick={() => onSelect(nearBusStop)}
+    >
       <ListItemHeader name={nearBusStop.stationNm} distance={nearBusStop.dist} isMobile={isMobile} />
 
-      <p className={`${getTextSizeClass(isMobile, "sm")} text-gray-500 mb-2`}>정류장 번호: {nearBusStop.arsId}</p>
+      <p className={`${isMobile ? "text-sm" : "text-xs"} text-gray-500 font-medium`}>
+        정류장 번호: {nearBusStop.arsId}
+      </p>
 
-      {/* TODO */}
+      {/* TODO: 노선 정보 추가 예정 */}
       {/*<RouteBadges routes={stop.routes} isMobile={isMobile} maxVisible={3} />*/}
     </div>
   )
