@@ -5,7 +5,7 @@ import { Bus, Train } from "lucide-react"
 import { LocationInfoCard } from "@/components/sidebar/location-info"
 import { BusStopList } from "@/components/sidebar/bus-stop-list"
 import { SubwayStationList } from "@/components/sidebar/subway-station-list"
-import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
+import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 interface SidebarContentProps {
   activeTab: TransitTab
@@ -13,11 +13,11 @@ interface SidebarContentProps {
   location: LocationInfo
   loading: boolean
   searchNearbyStops: () => void
-  busStops: BusStop[]
+  nearBusStops: NearBusStop[]
   subwayStations: SubwayStation[]
-  selectedBusStop: BusStop | null
+  selectedNearBusStop: NearBusStop | null
   selectedSubwayStation: SubwayStation | null
-  onSelectBusStop: (stop: BusStop) => void
+  onSelectNearBusStop: (stop: NearBusStop) => void
   onSelectSubwayStation: (station: SubwayStation) => void
 }
 
@@ -27,11 +27,11 @@ export function SidebarContent({
   location,
   loading,
   searchNearbyStops,
-  busStops,
+  nearBusStops,
   subwayStations,
-  selectedBusStop,
+  selectedNearBusStop,
   selectedSubwayStation,
-  onSelectBusStop,
+  onSelectNearBusStop,
   onSelectSubwayStation,
 }: SidebarContentProps) {
   return (
@@ -62,7 +62,7 @@ export function SidebarContent({
       <div className="flex-1 overflow-y-auto">
         <Tabs value={activeTab}>
           <TabsContent value="bus" className="mt-0">
-            <BusStopList busStops={busStops} selectedBusStop={selectedBusStop} onSelect={onSelectBusStop} />
+            <BusStopList nearBusStops={nearBusStops} selectedNearBusStop={selectedNearBusStop} onSelect={onSelectNearBusStop} />
           </TabsContent>
 
           <TabsContent value="subway" className="mt-0">

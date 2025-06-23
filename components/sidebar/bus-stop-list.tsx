@@ -1,29 +1,29 @@
 "use client"
 
-import type { BusStop } from "@/types/transit"
-import { getListContainerClass } from "@/utils/list-styles"
-import { EmptyList } from "@/components/common/empty-list"
-import { BusStopItem } from "@/components/sidebar/bus-stop-item"
+import type {NearBusStop} from "@/types/transit"
+import {getListContainerClass} from "@/utils/list-styles"
+import {EmptyList} from "@/components/common/empty-list"
+import {BusStopItem} from "@/components/sidebar/bus-stop-item"
 
 interface BusStopListProps {
-  busStops: BusStop[]
-  selectedBusStop: BusStop | null
-  onSelect: (stop: BusStop) => void
+  nearBusStops: NearBusStop[]
+  selectedNearBusStop: NearBusStop | null
+  onSelect: (stop: NearBusStop) => void
   isMobile?: boolean
 }
 
-export function BusStopList({ busStops, selectedBusStop, onSelect, isMobile = false }: BusStopListProps) {
-  if (busStops.length === 0) {
-    return <EmptyList type="bus" />
+export function BusStopList({nearBusStops, selectedNearBusStop, onSelect, isMobile = false}: BusStopListProps) {
+  if (nearBusStops.length === 0) {
+    return <EmptyList type="bus"/>
   }
 
   return (
     <div className={getListContainerClass(isMobile)}>
-      {busStops.map((stop) => (
+      {nearBusStops.map((nearBusStop: NearBusStop) => (
         <BusStopItem
-          key={stop.id}
-          stop={stop}
-          isSelected={selectedBusStop?.id === stop.id}
+          key={nearBusStop.stationId}
+          nearBusStop={nearBusStop}
+          isSelected={selectedNearBusStop?.stationId === nearBusStop.stationId}
           isMobile={isMobile}
           onSelect={onSelect}
         />

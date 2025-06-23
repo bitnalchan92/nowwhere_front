@@ -5,13 +5,16 @@
  * - API 응답 데이터와 일치하도록 설계
  */
 
-// 버스 정류장 정보를 나타내는 인터페이스
-export interface BusStop {
-  id: string // 정류장 고유 ID
-  name: string // 정류장 이름
-  number: string // 정류장 번호 (예: "23-456")
-  distance: number // 현재 위치로부터의 거리 (미터 단위)
-  routes: BusRoute[] // 이 정류장을 지나는 버스 노선들
+// 인접 버스 정류장 정보를 나타내는 인터페이스
+export interface NearBusStop {
+  stationId: string // 정류장 고유 ID
+  stationNm: string // 정류소명
+  arsId: string // 정류소고유번호 (정류소 번호)
+  posX: number // 정류소 좌표X (GRS80)
+  posY: number // 정류소 좌표Y (GRS80)
+  gpxX: number // 정류소 좌표X (WGS84)
+  gpxY: number // 정류소 좌표Y (WGS84)
+  dist: number // 거리(m)
 }
 
 // 버스 노선 정보를 나타내는 인터페이스

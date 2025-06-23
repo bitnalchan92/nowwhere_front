@@ -1,6 +1,6 @@
 import { SidebarContent } from "@/components/sidebar/sidebar-content"
 import { DetailContent } from "@/components/detail/detail-content"
-import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
+import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 데스크톱 레이아웃 컴포넌트의 props 타입 정의
 interface DesktopLayoutProps {
@@ -9,11 +9,11 @@ interface DesktopLayoutProps {
   location: LocationInfo
   loading: boolean
   searchNearbyStops: () => void
-  busStops: BusStop[]
+  nearBusStops: NearBusStop[]
   subwayStations: SubwayStation[]
-  selectedBusStop: BusStop | null
+  selectedNearBusStop: NearBusStop | null
   selectedSubwayStation: SubwayStation | null
-  onSelectBusStop: (stop: BusStop) => void
+  onSelectNearBusStop: (nearBusStop: NearBusStop) => void
   onSelectSubwayStation: (station: SubwayStation) => void
 }
 
@@ -30,11 +30,11 @@ export function DesktopLayout({
   location,
   loading,
   searchNearbyStops,
-  busStops,
+  nearBusStops,
   subwayStations,
-  selectedBusStop,
+  selectedNearBusStop,
   selectedSubwayStation,
-  onSelectBusStop,
+  onSelectNearBusStop,
   onSelectSubwayStation,
 }: DesktopLayoutProps) {
   return (
@@ -49,11 +49,11 @@ export function DesktopLayout({
           location={location}
           loading={loading}
           searchNearbyStops={searchNearbyStops}
-          busStops={busStops}
+          nearBusStops={nearBusStops}
           subwayStations={subwayStations}
-          selectedBusStop={selectedBusStop}
+          selectedNearBusStop={selectedNearBusStop}
           selectedSubwayStation={selectedSubwayStation}
-          onSelectBusStop={onSelectBusStop}
+          onSelectNearBusStop={onSelectNearBusStop}
           onSelectSubwayStation={onSelectSubwayStation}
         />
       </div>
@@ -61,7 +61,7 @@ export function DesktopLayout({
       <div className="flex-1 p-6 overflow-y-auto">
         <DetailContent
           activeTab={activeTab}
-          selectedBusStop={selectedBusStop}
+          selectedNearBusStop={selectedNearBusStop}
           selectedSubwayStation={selectedSubwayStation}
         />
       </div>

@@ -1,8 +1,9 @@
 "use client" // Next.js 13+ App Router에서 클라이언트 컴포넌트임을 명시 (브라우저에서 실행)
 
-import { MobileLayout } from "@/components/layout/mobile-layout"
-import { DesktopLayout } from "@/components/layout/desktop-layout"
-import { useTransit } from "@/hooks/use-transit"
+import {MobileLayout} from "@/components/layout/mobile-layout"
+import {DesktopLayout} from "@/components/layout/desktop-layout"
+import {useTransit} from "@/hooks/use-transit"
+import {NearBusStop} from "@/types/transit";
 
 /**
  * 메인 페이지 컴포넌트
@@ -16,9 +17,9 @@ export default function TransitApp() {
     activeTab, // 현재 선택된 탭 (버스/지하철)
     setActiveTab, // 탭 변경 함수
     location, // 현재 위치 정보
-    busStops, // 검색된 버스 정류장 목록
+    nearBusStops, // 검색된 인접 버스 정류장 목록
     subwayStations, // 검색된 지하철역 목록
-    selectedBusStop, // 선택된 버스 정류장
+    selectedNearBusStop, // 선택된 인접 버스 정류장
     selectedSubwayStation, // 선택된 지하철역
     loading, // 로딩 상태
     showDetail, // 모바일에서 상세 화면 표시 여부
@@ -38,11 +39,11 @@ export default function TransitApp() {
           location={location}
           loading={loading}
           searchNearbyStops={searchNearbyStops}
-          busStops={busStops}
+          nearBusStops={nearBusStops}
           subwayStations={subwayStations}
-          selectedBusStop={selectedBusStop}
+          selectedNearBusStop={selectedNearBusStop}
           selectedSubwayStation={selectedSubwayStation}
-          onSelectBusStop={(stop) => handleStopSelect(stop)}
+          onSelectNearBusStop={(nearBusStop: NearBusStop) => handleStopSelect(nearBusStop)}
           onSelectSubwayStation={(station) => handleStopSelect(station)}
           onBackToList={handleBackToList}
         />
@@ -56,11 +57,11 @@ export default function TransitApp() {
           location={location}
           loading={loading}
           searchNearbyStops={searchNearbyStops}
-          busStops={busStops}
+          nearBusStops={nearBusStops}
           subwayStations={subwayStations}
-          selectedBusStop={selectedBusStop}
+          selectedNearBusStop={selectedNearBusStop}
           selectedSubwayStation={selectedSubwayStation}
-          onSelectBusStop={(stop) => handleStopSelect(stop)}
+          onSelectNearBusStop={(nearBusStop: NearBusStop) => handleStopSelect(nearBusStop)}
           onSelectSubwayStation={(station) => handleStopSelect(station)}
         />
       </div>

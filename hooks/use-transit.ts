@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
-import type { BusStop, SubwayStation } from "@/types/transit"
+import type { NearBusStop, SubwayStation } from "@/types/transit"
 import { useLocation } from "./use-location"
 import { useSearch } from "./use-search"
 import { useSelection } from "./use-selection"
@@ -18,11 +18,11 @@ import { useMobile } from "./use-mobile"
 export function useTransit() {
   // 각각의 기능별 훅들을 가져와서 조합
   const { location, updateLocation } = useLocation() // 위치 관리
-  const { loading, busStops, subwayStations, searchNearbyStops, clearResults } = useSearch() // 검색 기능
+  const { loading, nearBusStops, subwayStations, searchNearbyStops, clearResults } = useSearch() // 검색 기능
   const {
-    selectedBusStop,
+    selectedNearBusStop,
     selectedSubwayStation,
-    selectBusStop,
+    selectNearBusStop,
     selectSubwayStation,
     clearSelection,
     autoSelectFirst,
@@ -35,8 +35,8 @@ export function useTransit() {
   useEffect(() => {
     clearSelection() // 기존 선택 초기화
     // 데스크톱에서는 첫 번째 항목을 자동 선택 (UX 개선)
-    autoSelectFirst(activeTab, busStops, subwayStations, isMobile)
-  }, [activeTab, busStops, subwayStations, isMobile, clearSelection, autoSelectFirst])
+    autoSelectFirst(activeTab, nearBusStops, subwayStations, isMobile)
+  }, [activeTab, nearBusStops, subwayStations, isMobile, clearSelection, autoSelectFirst])
 
   // 검색 버튼 클릭 시 실행되는 함수
   const handleSearch = async () => {
@@ -44,10 +44,10 @@ export function useTransit() {
   }
 
   // 정류장/역 선택 시 실행되는 함수
-  const handleStopSelect = (stop: BusStop | SubwayStation) => {
+  const handleStopSelect = (stop: NearBusStop | SubwayStation) => {
     // 현재 탭에 따라 적절한 선택 함수 호출
     if (activeTab === "bus") {
-      selectBusStop(stop as BusStop)
+      selectNearBusStop(stop as NearBusStop)
     } else {
       selectSubwayStation(stop as SubwayStation)
     }
@@ -72,9 +72,9 @@ export function useTransit() {
     // 상태들
     activeTab,
     location,
-    busStops,
+    nearBusStops,
     subwayStations,
-    selectedBusStop,
+    selectedNearBusStop,
     selectedSubwayStation,
     loading,
     showDetail,
