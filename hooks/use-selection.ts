@@ -1,45 +1,45 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import type { BusStop, SubwayStation, TransitTab } from "@/types/transit"
+import {useState, useCallback} from "react"
+import type {NearBusStop, SubwayStation, TransitTab} from "@/types/transit"
 
 export function useSelection() {
-  const [selectedBusStop, setSelectedBusStop] = useState<BusStop | null>(null)
+  const [selectedNearBusStop, setSelectedNearBusStop] = useState<NearBusStop | null>(null)
   const [selectedSubwayStation, setSelectedSubwayStation] = useState<SubwayStation | null>(null)
 
-  const selectBusStop = useCallback((busStop: BusStop) => {
-    setSelectedBusStop(busStop)
+  const selectNearBusStop = useCallback((nearBusStop: NearBusStop) => {
+    setSelectedNearBusStop(nearBusStop)
     setSelectedSubwayStation(null)
   }, [])
 
   const selectSubwayStation = useCallback((subwayStation: SubwayStation) => {
     setSelectedSubwayStation(subwayStation)
-    setSelectedBusStop(null)
+    setSelectedNearBusStop(null)
   }, [])
 
   const clearSelection = useCallback(() => {
-    setSelectedBusStop(null)
+    setSelectedNearBusStop(null)
     setSelectedSubwayStation(null)
   }, [])
 
   const autoSelectFirst = useCallback(
-    (activeTab: TransitTab, busStops: BusStop[], subwayStations: SubwayStation[], isMobile: boolean) => {
+    (activeTab: TransitTab, nearBusStops: NearBusStop[], subwayStations: SubwayStation[], isMobile: boolean) => {
       // 모바일에서는 자동 선택하지 않음
       if (isMobile) return
 
-      if (activeTab === "bus" && busStops.length > 0) {
-        selectBusStop(busStops[0])
+      if (activeTab === "bus" && nearBusStops.length > 0) {
+        selectNearBusStop(nearBusStops[0])
       } else if (activeTab === "subway" && subwayStations.length > 0) {
         selectSubwayStation(subwayStations[0])
       }
     },
-    [selectBusStop, selectSubwayStation],
+    [selectNearBusStop, selectSubwayStation],
   )
 
   return {
-    selectedBusStop,
+    selectedNearBusStop,
     selectedSubwayStation,
-    selectBusStop,
+    selectNearBusStop,
     selectSubwayStation,
     clearSelection,
     autoSelectFirst,

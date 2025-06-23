@@ -8,7 +8,7 @@ import { LocationInfoCard } from "@/components/sidebar/location-info"
 import { BusStopList } from "@/components/sidebar/bus-stop-list"
 import { SubwayStationList } from "@/components/sidebar/subway-station-list"
 import { DetailContent } from "@/components/detail/detail-content"
-import type { BusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
+import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 모바일 레이아웃 컴포넌트의 props 타입 정의
 interface MobileLayoutProps {
@@ -18,11 +18,11 @@ interface MobileLayoutProps {
   location: LocationInfo
   loading: boolean
   searchNearbyStops: () => void
-  busStops: BusStop[]
+  nearBusStops: NearBusStop[]
   subwayStations: SubwayStation[]
-  selectedBusStop: BusStop | null
+  selectedNearBusStop: NearBusStop | null
   selectedSubwayStation: SubwayStation | null
-  onSelectBusStop: (stop: BusStop) => void
+  onSelectNearBusStop: (nearBusStop: NearBusStop) => void
   onSelectSubwayStation: (station: SubwayStation) => void
   onBackToList: () => void
 }
@@ -40,11 +40,11 @@ export function MobileLayout({
   location,
   loading,
   searchNearbyStops,
-  busStops,
+  nearBusStops,
   subwayStations,
-  selectedBusStop,
+  selectedNearBusStop,
   selectedSubwayStation,
-  onSelectBusStop,
+  onSelectNearBusStop,
   onSelectSubwayStation,
   onBackToList,
 }: MobileLayoutProps) {
@@ -64,7 +64,7 @@ export function MobileLayout({
         <div className="flex-1 overflow-y-auto p-4">
           <DetailContent
             activeTab={activeTab}
-            selectedBusStop={selectedBusStop}
+            selectedNearBusStop={selectedNearBusStop}
             selectedSubwayStation={selectedSubwayStation}
           />
         </div>
@@ -102,9 +102,9 @@ export function MobileLayout({
         <Tabs value={activeTab}>
           <TabsContent value="bus" className="mt-0">
             <BusStopList
-              busStops={busStops}
-              selectedBusStop={selectedBusStop}
-              onSelect={onSelectBusStop}
+              nearBusStops={nearBusStops}
+              selectedNearBusStop={selectedNearBusStop}
+              onSelect={onSelectNearBusStop}
               isMobile={true} // 모바일 스타일 적용
             />
           </TabsContent>

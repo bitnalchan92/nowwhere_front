@@ -1,71 +1,71 @@
 import type { BusStop, SubwayStation } from "@/types/transit"
 
-export const sampleBusStops: BusStop[] = [
-  {
-    id: "1",
-    name: "역삼역",
-    number: "23-456",
-    distance: 120,
-    routes: [
-      {
-        id: "1",
-        routeNumber: "143",
-        destination: "강남역",
-        arrivalTime: 3,
-        remainingStops: 2,
-        vehicleType: "일반",
-      },
-      {
-        id: "2",
-        routeNumber: "146",
-        destination: "잠실역",
-        arrivalTime: 7,
-        remainingStops: 4,
-        vehicleType: "저상",
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "테헤란로",
-    number: "23-457",
-    distance: 250,
-    routes: [
-      {
-        id: "3",
-        routeNumber: "401",
-        destination: "수서역",
-        arrivalTime: 5,
-        remainingStops: 3,
-        vehicleType: "일반",
-      },
-      {
-        id: "4",
-        routeNumber: "402",
-        destination: "잠실역",
-        arrivalTime: 12,
-        remainingStops: 8,
-        vehicleType: "굴절",
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "강남역사거리",
-    number: "23-458",
-    distance: 380,
-    routes: [
-      {
-        id: "5",
-        routeNumber: "143",
-        destination: "청량리역",
-        arrivalTime: 8,
-        remainingStops: 5,
-        vehicleType: "일반",
-      },
-    ],
-  },
-]
+// export const sampleBusStops: BusStop[] = [
+//   {
+//     id: "1",
+//     name: "역삼역",
+//     number: "23-456",
+//     distance: 120,
+//     routes: [
+//       {
+//         id: "1",
+//         routeNumber: "143",
+//         destination: "강남역",
+//         arrivalTime: 3,
+//         remainingStops: 2,
+//         vehicleType: "일반",
+//       },
+//       {
+//         id: "2",
+//         routeNumber: "146",
+//         destination: "잠실역",
+//         arrivalTime: 7,
+//         remainingStops: 4,
+//         vehicleType: "저상",
+//       },
+//     ],
+//   },
+//   {
+//     id: "2",
+//     name: "테헤란로",
+//     number: "23-457",
+//     distance: 250,
+//     routes: [
+//       {
+//         id: "3",
+//         routeNumber: "401",
+//         destination: "수서역",
+//         arrivalTime: 5,
+//         remainingStops: 3,
+//         vehicleType: "일반",
+//       },
+//       {
+//         id: "4",
+//         routeNumber: "402",
+//         destination: "잠실역",
+//         arrivalTime: 12,
+//         remainingStops: 8,
+//         vehicleType: "굴절",
+//       },
+//     ],
+//   },
+//   {
+//     id: "3",
+//     name: "강남역사거리",
+//     number: "23-458",
+//     distance: 380,
+//     routes: [
+//       {
+//         id: "5",
+//         routeNumber: "143",
+//         destination: "청량리역",
+//         arrivalTime: 8,
+//         remainingStops: 5,
+//         vehicleType: "일반",
+//       },
+//     ],
+//   },
+// ]
 
 export const sampleSubwayStations: SubwayStation[] = [
   {
