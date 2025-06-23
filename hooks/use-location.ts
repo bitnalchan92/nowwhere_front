@@ -10,10 +10,13 @@ export function useLocation() {
     longitude: 0,
     address: "",
   })
+  const [isLocationReady, setIsLocationReady] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
 
+    setIsLoading(true); // 로딩중 상태! 위치 정보가 셋팅되고 나서 다른 처리를 할수있도록 추가!
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const {latitude, longitude} = position.coords;
@@ -31,8 +34,13 @@ export function useLocation() {
         }
 
         updateLocation(result)
+        setIsLocationReady(true);
+        setIsLoading(false);
       },
-      (error) => console.log("Geolocation Error:", error),
+      (error) => {
+        console.log("Geolocation Error:", error)
+        setIsLoading(false);
+      },
       {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -48,5 +56,7 @@ export function useLocation() {
   return {
     location,
     updateLocation,
+    isLocationReady,
+    isLoading,
   }
 }

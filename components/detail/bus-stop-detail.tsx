@@ -20,11 +20,11 @@ export function BusStopDetail({ busStop }: BusStopDetailProps) {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 ">
                 <MapPinIcon className="h-4 w-4" />
                 {formatDistance(busStop.dist)}
               </div>
-              <div>정류장 번호: {busStop.arsId}</div>
+              <div>정류장 번호 : {busStop.arsId}</div>
             </div>
           </CardContent>
         </Card>
