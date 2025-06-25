@@ -23,22 +23,20 @@ export function useSearch() {
   const searchNearbyStops = async () => {
     setLoading(true) // 로딩 시작
 
-    const response = await getNearBusStops().then((res) => {
+    const nearBusStops: NearBusStop[] = await getNearBusStops().then((res) => {
         return res;
       }
     );
 
-    console.log(response);
+    console.log('=====> nearBusStop : ', nearBusStops);
 
-    // 실제 API 호출 대신 샘플 데이터로 시뮬레이션
-    // 실제 프로젝트에서는 여기서 fetch나 axios로 API 호출
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        setNearBusStops(response) // 샘플 버스 정류장 데이터 설정
+        setNearBusStops(nearBusStops)
         setSubwayStations(sampleSubwayStations) // 샘플 지하철역 데이터 설정
         setLoading(false) // 로딩 종료
         resolve()
-      }, 1000) // 1초 지연으로 실제 API 호출 시뮬레이션
+      }) // 1초 지연으로 실제 API 호출 시뮬레이션
     })
   }
 
