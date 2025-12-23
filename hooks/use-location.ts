@@ -1,8 +1,9 @@
 "use client"
 
-import {useEffect, useState} from "react"
-import type {LocationInfo} from "@/types/transit"
-import {getAddressFormCoords} from "@/lib/locationApi";
+import { useEffect, useState } from "react"
+import type { LocationInfo } from "@/types/transit"
+import { getAddressFormCoords } from "@/lib/locationApi"
+import { toast } from "sonner"
 
 export function useLocation() {
   const [location, setLocation] = useState<LocationInfo>({
@@ -10,36 +11,59 @@ export function useLocation() {
     longitude: 0,
     address: "",
   })
-  const [isLocationReady, setIsLocationReady] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLocationReady, setIsLocationReady] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      const errorMessage = "위치 서비스를 지원하지 않는 브라우저입니다."
+      setError(errorMessage)
+      toast.error(errorMessage)
+      return
+    }
 
-    setIsLoading(true); // 로딩중 상태! 위치 정보가 셋팅되고 나서 다른 처리를 할수있도록 추가!
+    setIsLoading(true)
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const {latitude, longitude} = position.coords;
+        try {
+          const { latitude, longitude } = position.coords
 
-        const res = await getAddressFormCoords(latitude, longitude);
+          const res = await getAddressFormCoords(latitude, longitude)
 
-        const result: LocationInfo = {
-          latitude,
-          longitude,
-          address: res
-            ? (res.roadAddressName !== "" && res.zoneNo !== ""
-              ? `${res.roadAddressName} (${res.zoneNo})`
-              : res.addressName)
-            : "주소 정보를 불러오지 못했습니다."
+          const result: LocationInfo = {
+            latitude,
+            longitude,
+            address: res
+              ? res.roadAddressName !== "" && res.zoneNo !== ""
+                ? `${res.roadAddressName} (${res.zoneNo})`
+                : res.addressName
+              : "주소 정보를 불러오지 못했습니다.",
+          }
+
+          updateLocation(result)
+          setIsLocationReady(true)
+          setError(null)
+        } catch (err) {
+          const errorMessage = "주소 정보를 불러오는 중 오류가 발생했습니다."
+          setError(errorMessage)
+          toast.error(errorMessage)
+          console.error("Address fetch error:", err)
+        } finally {
+          setIsLoading(false)
         }
-
-        updateLocation(result)
-        setIsLocationReady(true);
-        setIsLoading(false);
       },
       (error) => {
-        console.log("Geolocation Error:", error)
-        setIsLoading(false);
+        let errorMessage = "위치 정보를 가져올 수 없습니다."
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMessage = "위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요."
+        } else if (error.code === error.TIMEOUT) {
+          errorMessage = "위치 정보를 가져오는 시간이 초과되었습니다."
+        }
+        setError(errorMessage)
+        toast.error(errorMessage)
+        console.error("Geolocation Error:", error)
+        setIsLoading(false)
       },
       {
         enableHighAccuracy: true,
@@ -58,5 +82,6 @@ export function useLocation() {
     updateLocation,
     isLocationReady,
     isLoading,
+    error,
   }
 }

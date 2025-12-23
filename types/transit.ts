@@ -27,6 +27,18 @@ export interface BusRoute {
   vehicleType: "일반" | "저상" | "굴절" // 차량 유형
 }
 
+// 버스 실시간 도착 정보를 나타내는 인터페이스
+export interface BusArrival {
+  busRouteId: string // 노선 ID
+  busRouteNm: string // 노선명 (버스 번호)
+  arrmsg1: string // 첫 번째 버스 도착 메시지 (예: "5분 후 도착")
+  arrmsg2: string // 두 번째 버스 도착 메시지
+  traTime1: number | null // 첫 번째 버스 도착 예정 시간 (초)
+  traTime2: number | null // 두 번째 버스 도착 예정 시간 (초)
+  sectOrd1: number | null // 첫 번째 버스 남은 정류장 수
+  sectOrd2: number | null // 두 번째 버스 남은 정류장 수
+}
+
 // 지하철역 정보를 나타내는 인터페이스
 export interface SubwayStation {
   id: string // 역 고유 ID
