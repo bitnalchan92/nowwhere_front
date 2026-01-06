@@ -8,6 +8,8 @@ import { LocationInfoCard } from "@/components/sidebar/location-info"
 import { BusStopList } from "@/components/sidebar/bus-stop-list"
 import { SubwayStationList } from "@/components/sidebar/subway-station-list"
 import { DetailContent } from "@/components/detail/detail-content"
+import { PullToRefresh } from "@/components/ui/pull-to-refresh"
+import { RefreshButton } from "@/components/ui/refresh-button"
 import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 모바일 레이아웃 컴포넌트의 props 타입 정의
@@ -25,6 +27,7 @@ interface MobileLayoutProps {
   onSelectNearBusStop: (nearBusStop: NearBusStop) => void
   onSelectSubwayStation: (station: SubwayStation) => void
   onBackToList: () => void
+  refreshAll: () => Promise<void>
 }
 
 /**
@@ -47,6 +50,7 @@ export function MobileLayout({
   onSelectNearBusStop,
   onSelectSubwayStation,
   onBackToList,
+  refreshAll,
 }: MobileLayoutProps) {
   // 상세 화면이 활성화된 경우의 렌더링
   if (showDetail) {
@@ -97,28 +101,35 @@ export function MobileLayout({
       {/* 현재 위치 정보와 검색 버튼 */}
       <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
 
-      {/* 정류장/역 리스트 (스크롤 가능) */}
-      <div className="flex-1 overflow-y-auto bg-white">
-        <Tabs value={activeTab}>
-          <TabsContent value="bus" className="mt-0">
-            <BusStopList
-              nearBusStops={nearBusStops}
-              selectedNearBusStop={selectedNearBusStop}
-              onSelect={onSelectNearBusStop}
-              isMobile={true} // 모바일 스타일 적용
-            />
-          </TabsContent>
+      {/* 정류장/역 리스트 (Pull to Refresh 적용) */}
+      <div className="flex-1">
+        <PullToRefresh onRefresh={refreshAll} disabled={loading}>
+          <div className="bg-white">
+            <Tabs value={activeTab}>
+              <TabsContent value="bus" className="mt-0">
+                <BusStopList
+                  nearBusStops={nearBusStops}
+                  selectedNearBusStop={selectedNearBusStop}
+                  onSelect={onSelectNearBusStop}
+                  isMobile={true} // 모바일 스타일 적용
+                />
+              </TabsContent>
 
-          <TabsContent value="subway" className="mt-0">
-            <SubwayStationList
-              stations={subwayStations}
-              selectedStation={selectedSubwayStation}
-              onSelect={onSelectSubwayStation}
-              isMobile={true} // 모바일 스타일 적용
-            />
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="subway" className="mt-0">
+                <SubwayStationList
+                  stations={subwayStations}
+                  selectedStation={selectedSubwayStation}
+                  onSelect={onSelectSubwayStation}
+                  isMobile={true} // 모바일 스타일 적용
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </PullToRefresh>
       </div>
+
+      {/* 플로팅 새로고침 버튼 */}
+      <RefreshButton onRefresh={refreshAll} disabled={loading} />
     </div>
   )
 }

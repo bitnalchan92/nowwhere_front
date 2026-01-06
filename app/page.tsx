@@ -26,6 +26,7 @@ export default function TransitApp() {
     searchNearbyStops, // 근처 정류장/역 검색 함수
     handleStopSelect, // 정류장/역 선택 처리 함수
     handleBackToList, // 모바일에서 리스트로 돌아가기 함수
+    refreshAll, // 위치와 정류장 정보 새로고침 함수
   } = useTransit()
 
   return (
@@ -46,6 +47,7 @@ export default function TransitApp() {
           onSelectNearBusStop={(nearBusStop: NearBusStop) => handleStopSelect(nearBusStop)}
           onSelectSubwayStation={(station) => handleStopSelect(station)}
           onBackToList={handleBackToList}
+          refreshAll={refreshAll}
         />
       </div>
 
@@ -63,6 +65,7 @@ export default function TransitApp() {
           selectedSubwayStation={selectedSubwayStation}
           onSelectNearBusStop={(nearBusStop: NearBusStop) => handleStopSelect(nearBusStop)}
           onSelectSubwayStation={(station) => handleStopSelect(station)}
+          refreshAll={refreshAll}
         />
       </div>
     </div>

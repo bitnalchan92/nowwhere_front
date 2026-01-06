@@ -1,5 +1,6 @@
 import { SidebarContent } from "@/components/sidebar/sidebar-content"
 import { DetailContent } from "@/components/detail/detail-content"
+import { RefreshButton } from "@/components/ui/refresh-button"
 import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 데스크톱 레이아웃 컴포넌트의 props 타입 정의
@@ -15,6 +16,7 @@ interface DesktopLayoutProps {
   selectedSubwayStation: SubwayStation | null
   onSelectNearBusStop: (nearBusStop: NearBusStop) => void
   onSelectSubwayStation: (station: SubwayStation) => void
+  refreshAll: () => Promise<void>
 }
 
 /**
@@ -36,6 +38,7 @@ export function DesktopLayout({
   selectedSubwayStation,
   onSelectNearBusStop,
   onSelectSubwayStation,
+  refreshAll,
 }: DesktopLayoutProps) {
   return (
     <div className="flex h-screen">
@@ -65,6 +68,9 @@ export function DesktopLayout({
           selectedSubwayStation={selectedSubwayStation}
         />
       </div>
+
+      {/* 플로팅 새로고침 버튼 */}
+      <RefreshButton onRefresh={refreshAll} disabled={loading} />
     </div>
   )
 }

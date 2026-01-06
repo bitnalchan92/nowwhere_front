@@ -17,7 +17,7 @@ import { useMobile } from "./use-mobile"
  */
 export function useTransit() {
   // 각각의 기능별 훅들을 가져와서 조합
-  const { location, updateLocation, error: locationError } = useLocation() // 위치 관리
+  const { location, updateLocation, refreshLocation, error: locationError } = useLocation() // 위치 관리
   const { loading, nearBusStops, subwayStations, searchNearbyStops, clearResults } = useSearch() // 검색 기능
   const {
     selectedNearBusStop,
@@ -68,6 +68,15 @@ export function useTransit() {
     }
   }
 
+  // 위치를 새로 가져오고 자동으로 검색하는 통합 새로고침 함수
+  const refreshAll = async () => {
+    const newLocation = await refreshLocation()
+    if (newLocation) {
+      // 위치 획득 성공 시 새로운 위치로 자동 검색 실행
+      await searchNearbyStops(newLocation.latitude, newLocation.longitude)
+    }
+  }
+
   // 컴포넌트에서 사용할 모든 상태와 함수들을 반환
   return {
     // 상태들
@@ -89,5 +98,6 @@ export function useTransit() {
     updateLocation,
     clearResults,
     clearSelection,
+    refreshAll,
   }
 }
