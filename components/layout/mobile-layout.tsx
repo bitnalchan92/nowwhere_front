@@ -98,32 +98,35 @@ export function MobileLayout({
         </Tabs>
       </div>
 
-      {/* 현재 위치 정보와 검색 버튼 */}
-      <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
-
-      {/* 정류장/역 리스트 (Pull to Refresh 적용) */}
+      {/* 전체 컨텐츠 영역 (Pull to Refresh 적용) */}
       <div className="flex-1">
         <PullToRefresh onRefresh={refreshAll} disabled={loading}>
-          <div className="bg-white">
-            <Tabs value={activeTab}>
-              <TabsContent value="bus" className="mt-0">
-                <BusStopList
-                  nearBusStops={nearBusStops}
-                  selectedNearBusStop={selectedNearBusStop}
-                  onSelect={onSelectNearBusStop}
-                  isMobile={true} // 모바일 스타일 적용
-                />
-              </TabsContent>
+          <div>
+            {/* 현재 위치 정보와 검색 버튼 */}
+            <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
 
-              <TabsContent value="subway" className="mt-0">
-                <SubwayStationList
-                  stations={subwayStations}
-                  selectedStation={selectedSubwayStation}
-                  onSelect={onSelectSubwayStation}
-                  isMobile={true} // 모바일 스타일 적용
-                />
-              </TabsContent>
-            </Tabs>
+            {/* 정류장/역 리스트 */}
+            <div className="bg-white">
+              <Tabs value={activeTab}>
+                <TabsContent value="bus" className="mt-0">
+                  <BusStopList
+                    nearBusStops={nearBusStops}
+                    selectedNearBusStop={selectedNearBusStop}
+                    onSelect={onSelectNearBusStop}
+                    isMobile={true} // 모바일 스타일 적용
+                  />
+                </TabsContent>
+
+                <TabsContent value="subway" className="mt-0">
+                  <SubwayStationList
+                    stations={subwayStations}
+                    selectedStation={selectedSubwayStation}
+                    onSelect={onSelectSubwayStation}
+                    isMobile={true} // 모바일 스타일 적용
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         </PullToRefresh>
       </div>
