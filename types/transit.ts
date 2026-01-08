@@ -12,9 +12,10 @@ export interface NearBusStop {
   arsId: string // 정류소고유번호 (정류소 번호)
   posX: number // 정류소 좌표X (GRS80)
   posY: number // 정류소 좌표Y (GRS80)
-  gpxX: number // 정류소 좌표X (WGS84)
-  gpxY: number // 정류소 좌표Y (WGS84)
+  gpsX: number // 정류소 좌표X (WGS84 경도)
+  gpsY: number // 정류소 좌표Y (WGS84 위도)
   dist: number // 거리(m)
+  routes?: Array<{ busRouteNm: string }> // 노선 정보 (선택)
 }
 
 // 버스 노선 정보를 나타내는 인터페이스

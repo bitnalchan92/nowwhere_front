@@ -10,6 +10,7 @@ import { SubwayStationList } from "@/components/sidebar/subway-station-list"
 import { DetailContent } from "@/components/detail/detail-content"
 import { PullToRefresh } from "@/components/ui/pull-to-refresh"
 import { RefreshButton } from "@/components/ui/refresh-button"
+import { BusStopMap } from "@/components/map/bus-stop-map"
 import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 모바일 레이아웃 컴포넌트의 props 타입 정의
@@ -81,7 +82,7 @@ export function MobileLayout({
     <div className="flex flex-col h-screen">
       {/* 모바일 헤더 (제목과 탭) */}
       <div className="bg-white border-b border-gray-200 p-4">
-        <h1 className="text-xl font-bold text-gray-900 mb-4">실시간 교통정보</h1>
+        <h1 className="text-xl font-bold text-gray-900 mb-4">오나요?</h1>
 
         {/* 버스/지하철 탭 전환 */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TransitTab)}>
@@ -90,7 +91,7 @@ export function MobileLayout({
               <Bus className="h-4 w-4" />
               버스
             </TabsTrigger>
-            <TabsTrigger value="subway" className="flex items-center gap-2">
+            <TabsTrigger value="subway" disabled className="flex items-center gap-2">
               <Train className="h-4 w-4" />
               지하철
             </TabsTrigger>
@@ -98,7 +99,24 @@ export function MobileLayout({
         </Tabs>
       </div>
 
-      {/* 전체 컨텐츠 영역 (Pull to Refresh 적용) */}
+      {/* 현재 위치 정보와 검색 버튼 */}
+      <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
+
+      {/* 지도 (버스 탭에서만 표시) */}
+      {activeTab === "bus" && (
+        <div className="flex-shrink-0 border-b border-gray-200 bg-gray-100 overflow-hidden" style={{ height: '256px' }}>
+          <BusStopMap
+            busStops={nearBusStops}
+            userLocation={
+              location ? { latitude: location.latitude, longitude: location.longitude } : null
+            }
+            selectedStop={selectedNearBusStop}
+            onMarkerClick={onSelectNearBusStop}
+          />
+        </div>
+      )}
+
+      {/* 정류장/역 리스트 (Pull to Refresh 적용) */}
       <div className="flex-1">
         <PullToRefresh onRefresh={refreshAll} disabled={loading}>
           <div>

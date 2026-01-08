@@ -21,10 +21,11 @@ export function BusStopList({ nearBusStops, selectedNearBusStop, onSelect, isMob
 
   return (
     <div className={isMobile ? "divide-y divide-gray-100" : "space-y-2 p-2"}>
-      {stops.map((nearBusStop) => (
+      {stops.map((nearBusStop, index) => (
         <BusStopItem
           key={nearBusStop.stationId}
           nearBusStop={nearBusStop}
+          index={index}
           isSelected={selectedNearBusStop?.stationId === nearBusStop.stationId}
           isMobile={isMobile}
           onSelect={onSelect}
