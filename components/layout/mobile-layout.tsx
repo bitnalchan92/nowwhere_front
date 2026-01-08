@@ -121,7 +121,7 @@ export function MobileLayout({
         <PullToRefresh onRefresh={refreshAll} disabled={loading}>
           <div>
             {/* 현재 위치 정보와 검색 버튼 */}
-            <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
+            {/*<LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />*/}
 
             {/* 정류장/역 리스트 */}
             <div className="bg-white">
