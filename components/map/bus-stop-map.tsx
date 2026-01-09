@@ -1,7 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { NearBusStop } from "@/types/transit"
+import { useDeviceHeading } from "@/hooks/use-device-heading"
+import { useMobile } from "@/hooks/use-mobile"
 
 declare global {
   interface Window {
@@ -20,6 +22,15 @@ export function BusStopMap({ busStops, userLocation, selectedStop, onMarkerClick
   const mapContainer = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const markersRef = useRef<any[]>([])
+  const userMarkerRef = useRef<any>(null)
+  const headingOverlayRef = useRef<any>(null)
+
+  const isMobile = useMobile()
+  const { heading, permissionState, startWatching } = useDeviceHeading()
+  const [hasRequestedPermission, setHasRequestedPermission] = useState(false)
+
+  // 모바일에서만 방향 표시 사용
+  const showHeading = isMobile && heading !== null
 
   useEffect(() => {
     if (!mapContainer.current) return
@@ -43,31 +54,13 @@ export function BusStopMap({ busStops, userLocation, selectedStop, onMarkerClick
         const map = new window.kakao.maps.Map(mapContainer.current, mapOptions)
         mapRef.current = map
 
-        // 사용자 위치 마커 표시
+        // 250m 반경 원 표시
         if (userLocation) {
           const userMarkerPosition = new window.kakao.maps.LatLng(
             userLocation.latitude,
             userLocation.longitude
           )
 
-          // 사용자 위치 원형 마커
-          const userMarker = new window.kakao.maps.CustomOverlay({
-            position: userMarkerPosition,
-            content: `
-              <div style="
-                width: 16px;
-                height: 16px;
-                border-radius: 50%;
-                background: #3b82f6;
-                border: 3px solid white;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-              "></div>
-            `,
-            yAnchor: 0.5,
-          })
-          userMarker.setMap(map)
-
-          // 250m 반경 원 표시
           const circle = new window.kakao.maps.Circle({
             center: userMarkerPosition,
             radius: 250,
@@ -89,6 +82,93 @@ export function BusStopMap({ busStops, userLocation, selectedStop, onMarkerClick
       loadKakaoMap()
     }
   }, [userLocation])
+
+  // 사용자 위치 마커 및 방향 표시 업데이트
+  useEffect(() => {
+    if (!mapRef.current || !userLocation || !window.kakao) return
+
+    const userMarkerPosition = new window.kakao.maps.LatLng(
+      userLocation.latitude,
+      userLocation.longitude
+    )
+
+    // 기존 마커 제거
+    if (userMarkerRef.current) {
+      userMarkerRef.current.setMap(null)
+    }
+    if (headingOverlayRef.current) {
+      headingOverlayRef.current.setMap(null)
+    }
+
+    // 방향 표시 부채꼴 (모바일에서 heading이 있을 때만)
+    if (showHeading) {
+      const headingDiv = document.createElement("div")
+      headingDiv.style.cssText = "position: relative; width: 80px; height: 80px;"
+      headingDiv.innerHTML = `
+        <div style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          transform: translate(-50%, -50%) rotate(${heading}deg);
+          transform-origin: center center;
+        ">
+          <div style="
+            position: absolute;
+            left: -25px;
+            top: -60px;
+            width: 50px;
+            height: 60px;
+            background: linear-gradient(to bottom, rgba(59, 130, 246, 0.4) 0%, rgba(59, 130, 246, 0) 100%);
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+          "></div>
+        </div>
+      `
+
+      const headingOverlay = new window.kakao.maps.CustomOverlay({
+        position: userMarkerPosition,
+        content: headingDiv,
+        yAnchor: 0.5,
+        xAnchor: 0.5,
+        zIndex: 1,
+      })
+      headingOverlay.setMap(mapRef.current)
+      headingOverlayRef.current = headingOverlay
+    }
+
+    // 사용자 위치 원형 마커 (항상 표시)
+    const userMarkerDiv = document.createElement("div")
+    userMarkerDiv.innerHTML = `
+      <div style="
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #3b82f6;
+        border: 3px solid white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      "></div>
+    `
+
+    const userMarker = new window.kakao.maps.CustomOverlay({
+      position: userMarkerPosition,
+      content: userMarkerDiv,
+      yAnchor: 0.5,
+      xAnchor: 0.5,
+      zIndex: 2,
+    })
+    userMarker.setMap(mapRef.current)
+    userMarkerRef.current = userMarker
+
+  }, [userLocation, showHeading, heading])
+
+  // iOS 모바일에서 방향 센서 권한 요청 (지도 클릭 시)
+  const handleMapClick = async () => {
+    if (isMobile && permissionState === "prompt" && !hasRequestedPermission) {
+      setHasRequestedPermission(true)
+      await startWatching()
+    }
+  }
 
   // 버스 정류장 마커 업데이트
   useEffect(() => {
@@ -165,6 +245,7 @@ export function BusStopMap({ busStops, userLocation, selectedStop, onMarkerClick
     <div
       ref={mapContainer}
       className="w-full h-full"
+      onClick={handleMapClick}
     />
   )
 }

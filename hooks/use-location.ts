@@ -54,16 +54,31 @@ export function useLocation() {
         }
       },
       (error) => {
-        let errorMessage = "위치 정보를 가져올 수 없습니다."
-        if (error.code === error.PERMISSION_DENIED) {
-          errorMessage = "위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요."
-        } else if (error.code === error.TIMEOUT) {
-          errorMessage = "위치 정보를 가져오는 시간이 초과되었습니다."
-        }
-        setError(errorMessage)
-        toast.error(errorMessage)
         console.error("Geolocation Error:", error)
+
+        // 개발 환경에서 위치를 가져올 수 없는 경우 기본 위치 사용 (서울역 근처)
+        const fallbackLocation: LocationInfo = {
+          latitude: 37.5559,
+          longitude: 126.9723,
+          address: "서울특별시 중구 남대문로5가 (기본 위치)",
+        }
+
+        updateLocation(fallbackLocation)
+        setIsLocationReady(true)
         setIsLoading(false)
+
+        if (process.env.NODE_ENV === "development") {
+          toast.info("위치 정보를 가져올 수 없어 기본 위치를 사용합니다.")
+        } else {
+          let errorMessage = "위치 정보를 가져올 수 없습니다."
+          if (error.code === error.PERMISSION_DENIED) {
+            errorMessage = "위치 권한이 거부되었습니다. 브라우저 설정에서 위치 권한을 허용해주세요."
+          } else if (error.code === error.TIMEOUT) {
+            errorMessage = "위치 정보를 가져오는 시간이 초과되었습니다."
+          }
+          setError(errorMessage)
+          toast.error(errorMessage)
+        }
       },
       {
         enableHighAccuracy: true,
