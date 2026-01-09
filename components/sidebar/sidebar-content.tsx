@@ -39,7 +39,12 @@ export function SidebarContent({
     <div className="flex flex-col h-full">
       {/* 헤더 */}
       <div className="flex-shrink-0 p-4 border-b border-gray-200">
-        <h1 className="text-xl font-bold text-gray-900 mb-4">오나요?</h1>
+        <div className="mb-4">
+          <h1 className="text-xl font-bold text-gray-900">오나요?</h1>
+          <p className="text-[11px] text-gray-400 mt-1 tracking-tight">
+            추운 겨울 손이 시린데 타이핑은 하기 싫어 만든
+          </p>
+        </div>
 
         {/* 탭 */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TransitTab)}>
