@@ -33,6 +33,18 @@ NowWhere는 사용자의 현재 위치를 기반으로 주변 버스 정류장�
 - **남은 정류장 수**: 현재 위치까지 몇 정류장 남았는지 표시
 - **버스 번호**: 노선 번호 및 종류 구분
 
+### 4. 지도 통합 (🆕 2026.01.08)
+- **Naver Maps 연동**: 네이버 지도를 활용한 정류장 위치 시각화
+- **마커 표시**: 현재 위치 및 주변 정류장을 지도에 마커로 표시
+- **정류장 선택**: 지도 마커 클릭 시 해당 정류장 정보 표시
+- **반응형 지도**: 모바일과 데스크톱 환경에 최적화된 지도 크기 및 레이아웃
+
+### 5. 모바일 방향 센서 (🆕 2026.01.09)
+- **사용자 방향 표시**: 모바일 디바이스의 나침반 센서를 활용하여 사용자가 바라보는 방향을 지도에 표시
+- **부채꼴 시각화**: 현재 위치에서 사용자가 바라보는 방향을 부채꼴 형태로 시각화
+- **iOS 권한 관리**: iOS 디바이스에서 나침반 버튼을 통한 방향 센서 권한 요청
+- **크로스 플랫폼**: iOS와 Android 모두 지원 (DeviceOrientationEvent 기반)
+
 ## 🛠 기술 스택
 
 ### Core Framework
@@ -45,6 +57,11 @@ NowWhere는 사용자의 현재 위치를 기반으로 주변 버스 정류장�
 - **Radix UI**: 접근성 높은 UI 컴포넌트 라이브러리
 - **Shadcn/ui**: 커스터마이징 가능한 컴포넌트 시스템
 - **Lucide React**: 모던한 아이콘 라이브러리
+
+### Maps & Geolocation
+- **Naver Maps API**: 지도 표시 및 마커 관리
+- **Geolocation API**: 브라우저 위치 정보 활용
+- **DeviceOrientation API**: 모바일 방향 센서 활용
 
 ### State Management & Data Fetching
 - **Axios 1.13.2**: HTTP 클라이언트
@@ -71,10 +88,35 @@ nowwhere_front/
 │   └── loading.tsx          # 로딩 상태 UI
 │
 ├── components/              # React 컴포넌트
+│   ├── layout/              # 레이아웃 컴포넌트
+│   │   ├── desktop-layout.tsx
+│   │   └── mobile-layout.tsx
+│   ├── sidebar/             # 사이드바 (정류장 목록)
+│   │   ├── sidebar-content.tsx
+│   │   ├── bus-stop-list.tsx
+│   │   ├── bus-stop-item.tsx
+│   │   ├── subway-station-list.tsx
+│   │   └── location-info.tsx
+│   ├── detail/              # 상세 정보 패널
+│   │   ├── detail-content.tsx
+│   │   └── bus-stop-detail.tsx
+│   ├── map/                 # 지도 컴포넌트
+│   │   └── bus-stop-map.tsx
 │   └── ui/                  # Shadcn UI 컴포넌트
 │
+├── hooks/                   # Custom React Hooks
+│   ├── use-location.ts     # 위치 정보 훅
+│   ├── use-device-heading.ts  # 디바이스 방향 센서 훅
+│   ├── use-transit.ts      # 정류장/버스 정보 훅
+│   ├── use-detail.ts       # 상세 정보 훅
+│   └── use-search.ts       # 검색 기능 훅
+│
 ├── lib/                     # 유틸리티 및 헬퍼
+│   ├── api.ts              # API 클라이언트
 │   └── utils.ts            # 공통 유틸 함수
+│
+├── types/                   # TypeScript 타입 정의
+│   └── transit.ts          # 교통 관련 타입
 │
 ├── public/                  # 정적 파일
 │
@@ -91,9 +133,18 @@ nowwhere_front/
 # Backend API URL
 NEXT_PUBLIC_SERVER_HOST=https://wheremybbus.co.kr
 
+# Naver Maps API
+NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
+
 # 개발 환경
 # NEXT_PUBLIC_SERVER_HOST=http://localhost:8080
 ```
+
+**Naver Maps API 키 발급 방법:**
+1. [Naver Cloud Platform](https://www.ncloud.com/) 접속 및 로그인
+2. Console → Services → AI·NAVER API → Application 등록
+3. Maps 서비스 선택 및 Web Dynamic Map 활성화
+4. Client ID를 `.env.local`에 설정
 
 ## 🚀 시작하기
 
@@ -185,6 +236,17 @@ pnpm start
 - [x] 반응형 디자인
 - [x] Vercel 자동 배포
 - [x] HTTPS 보안 통신
+- [x] **Naver Maps 통합** (2026.01.08)
+  - 정류장 위치 시각화
+  - 마커 클릭을 통한 정류장 선택
+  - 현재 위치 표시
+- [x] **Pull-to-Refresh** (2026.01.06)
+  - 모바일에서 아래로 당겨서 새로고침
+  - 새로고침 버튼 추가
+- [x] **모바일 방향 센서** (2026.01.09)
+  - 사용자가 바라보는 방향 시각화
+  - iOS/Android 크로스 플랫폼 지원
+  - iOS 방향 센서 권한 관리
 
 ### 향후 개발 예정 🚧
 
@@ -204,10 +266,10 @@ pnpm start
   - 도착 임박 시 알림
   - 알림 설정 커스터마이징
 
-- [ ] **지도 통합**
-  - Kakao Maps/Naver Maps 연동
-  - 정류장 위치 시각화
-  - 버스 실시간 위치 표시
+- [x] ~~**지도 통합**~~ ✅ 완료 (2026.01.08)
+  - ~~Naver Maps 연동~~
+  - ~~정류장 위치 시각화~~
+  - [ ] 버스 실시간 위치 표시 (추가 개발 필요)
 
 #### Phase 2: UI/UX 고도화 (중기)
 - [ ] **다크 모드**
@@ -323,6 +385,23 @@ This project is licensed under the MIT License.
 ## 📧 문의
 
 프로젝트 관련 문의사항은 Issues를 통해 남겨주세요.
+
+## 📝 최근 업데이트 내역
+
+### 2026.01.09
+- **앱 부제 추가**: "추운 겨울 손이 시린데 타이핑은 하기 싫어 만든" 감성적인 부제 추가
+- **iOS 방향 센서 권한 관리**: iOS 디바이스에서 나침반 버튼을 통해 방향 센서 권한 요청 기능 추가
+- **모바일 방향 표시**: 사용자가 바라보는 방향을 지도에 부채꼴 형태로 시각화
+
+### 2026.01.08
+- **Naver Maps 통합**: 네이버 지도 API를 활용한 정류장 위치 시각화 기능 추가
+- **지도 마커**: 현재 위치 및 주변 정류장을 지도에 마커로 표시
+- **반응형 지도**: 모바일과 데스크톱 환경에 최적화된 지도 레이아웃 구현
+
+### 2026.01.06-07
+- **Pull-to-Refresh**: 모바일에서 아래로 당겨서 새로고침 기능 추가
+- **새로고침 버튼**: 수동 새로고침을 위한 버튼 UI 추가
+- **UX 개선**: Pull-to-Refresh 동작 범위를 전체 콘텐츠 영역으로 확장
 
 ## 🔗 관련 링크
 
