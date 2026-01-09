@@ -241,11 +241,63 @@ export function BusStopMap({ busStops, userLocation, selectedStop, onMarkerClick
     mapRef.current.panTo(moveLatLon)
   }, [selectedStop])
 
+  // 나침반 버튼 클릭 시 권한 요청
+  const handleCompassClick = async () => {
+    if (permissionState === "prompt") {
+      await startWatching()
+    }
+  }
+
   return (
-    <div
-      ref={mapContainer}
-      className="w-full h-full"
-      onClick={handleMapClick}
-    />
+    <div className="relative w-full h-full">
+      <div
+        ref={mapContainer}
+        className="w-full h-full"
+      />
+      {/* 모바일에서 방향 센서 권한 요청 버튼 */}
+      {isMobile && permissionState === "prompt" && (
+        <button
+          onClick={handleCompassClick}
+          className="absolute top-3 right-3 z-10 bg-white rounded-full p-2 shadow-md border border-gray-200 hover:bg-gray-50 active:bg-gray-100"
+          aria-label="방향 센서 활성화"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-blue-600"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" />
+          </svg>
+        </button>
+      )}
+      {/* 방향 표시 활성화됨 표시 */}
+      {isMobile && heading !== null && (
+        <div className="absolute top-3 right-3 z-10 bg-blue-500 rounded-full p-2 shadow-md">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ transform: `rotate(${heading}deg)` }}
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="white" />
+          </svg>
+        </div>
+      )}
+    </div>
   )
 }
