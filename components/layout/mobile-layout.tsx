@@ -11,6 +11,7 @@ import { DetailContent } from "@/components/detail/detail-content"
 import { PullToRefresh } from "@/components/ui/pull-to-refresh"
 import { RefreshButton } from "@/components/ui/refresh-button"
 import { BusStopMap } from "@/components/map/bus-stop-map"
+import { SubwayRealtimeView } from "@/components/subway/subway-realtime-view"
 import type { NearBusStop, LocationInfo, SubwayStation, TransitTab } from "@/types/transit"
 
 // 모바일 레이아웃 컴포넌트의 props 타입 정의
@@ -77,7 +78,43 @@ export function MobileLayout({
     )
   }
 
-  // 리스트 화면 렌더링 (기본 화면)
+  // 지하철 탭: 전체 화면 노선도
+  if (activeTab === "subway") {
+    return (
+      <div className="flex flex-col h-screen">
+        {/* 모바일 헤더 (제목과 탭) */}
+        <div className="bg-white border-b border-gray-200 p-4">
+          <div className="mb-4">
+            <h1 className="text-xl font-bold text-gray-900">오나요?</h1>
+            <p className="text-[11px] text-gray-400 mt-1 tracking-tight">
+              추운 겨울 손이 시린데 타이핑은 하기 싫어 만든
+            </p>
+          </div>
+
+          {/* 버스/지하철 탭 전환 */}
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TransitTab)}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="bus" className="flex items-center gap-2">
+                <Bus className="h-4 w-4" />
+                버스
+              </TabsTrigger>
+              <TabsTrigger value="subway" className="flex items-center gap-2">
+                <Train className="h-4 w-4" />
+                지하철
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+
+        {/* 지하철 노선도 (전체 화면) */}
+        <div className="flex-1 min-h-0 overflow-hidden">
+          <SubwayRealtimeView />
+        </div>
+      </div>
+    )
+  }
+
+  // 버스 탭: 리스트 화면 렌더링 (기본 화면)
   return (
     <div className="flex flex-col h-screen">
       {/* 모바일 헤더 (제목과 탭) */}
@@ -96,7 +133,7 @@ export function MobileLayout({
               <Bus className="h-4 w-4" />
               버스
             </TabsTrigger>
-            <TabsTrigger value="subway" disabled className="flex items-center gap-2">
+            <TabsTrigger value="subway" className="flex items-center gap-2">
               <Train className="h-4 w-4" />
               지하철
             </TabsTrigger>
@@ -108,48 +145,27 @@ export function MobileLayout({
       <LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />
 
       {/* 지도 (버스 탭에서만 표시) */}
-      {activeTab === "bus" && (
-        <div className="flex-shrink-0 border-b border-gray-200 bg-gray-100 overflow-hidden" style={{ height: '256px' }}>
-          <BusStopMap
-            busStops={nearBusStops}
-            userLocation={
-              location ? { latitude: location.latitude, longitude: location.longitude } : null
-            }
-            selectedStop={selectedNearBusStop}
-            onMarkerClick={onSelectNearBusStop}
-          />
-        </div>
-      )}
+      <div className="flex-shrink-0 border-b border-gray-200 bg-gray-100 overflow-hidden" style={{ height: '256px' }}>
+        <BusStopMap
+          busStops={nearBusStops}
+          userLocation={
+            location ? { latitude: location.latitude, longitude: location.longitude } : null
+          }
+          selectedStop={selectedNearBusStop}
+          onMarkerClick={onSelectNearBusStop}
+        />
+      </div>
 
-      {/* 정류장/역 리스트 (Pull to Refresh 적용) */}
+      {/* 정류장 리스트 (Pull to Refresh 적용) */}
       <div className="flex-1">
         <PullToRefresh onRefresh={refreshAll} disabled={loading}>
-          <div>
-            {/* 현재 위치 정보와 검색 버튼 */}
-            {/*<LocationInfoCard location={location} loading={loading} onSearch={searchNearbyStops} activeTab={activeTab} />*/}
-
-            {/* 정류장/역 리스트 */}
-            <div className="bg-white">
-              <Tabs value={activeTab}>
-                <TabsContent value="bus" className="mt-0">
-                  <BusStopList
-                    nearBusStops={nearBusStops}
-                    selectedNearBusStop={selectedNearBusStop}
-                    onSelect={onSelectNearBusStop}
-                    isMobile={true} // 모바일 스타일 적용
-                  />
-                </TabsContent>
-
-                <TabsContent value="subway" className="mt-0">
-                  <SubwayStationList
-                    stations={subwayStations}
-                    selectedStation={selectedSubwayStation}
-                    onSelect={onSelectSubwayStation}
-                    isMobile={true} // 모바일 스타일 적용
-                  />
-                </TabsContent>
-              </Tabs>
-            </div>
+          <div className="bg-white">
+            <BusStopList
+              nearBusStops={nearBusStops}
+              selectedNearBusStop={selectedNearBusStop}
+              onSelect={onSelectNearBusStop}
+              isMobile={true}
+            />
           </div>
         </PullToRefresh>
       </div>
